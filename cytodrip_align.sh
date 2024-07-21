@@ -109,7 +109,7 @@ sh ./run_bedtools.sh
 #Count the reads for each p and m file
 rm -ri /bed #don't need these files, leave bed files in /rmdup
 #in /rmdup
-wc -l *.bed
+wc -l *.bed > read_count.txt
 #Add up read counts for m_ and p_ bed files for each sample, then divide by 10e3 to get unique reads per million mapped
 
 #Read-count normalization (RPM)
