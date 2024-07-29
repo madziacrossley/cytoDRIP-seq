@@ -40,7 +40,7 @@ ADAPTER_REV=AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCATT
 
 cat sample_names.txt | xargs -I {} -P10 sh -c 'cutadapt -j 10 --minimum-length 30 -a $ADAPTER_FWD -A ADAPTER_REV -o a.{}.R1.fq.gz -p a.{}.R2.fq.gz {}.R1.fq.gz {}.R2.fq.gz 1> a.{}.txt'
 cat sample_names.txt | xargs -I {} -P10 sh -c 'cutadapt -j 10 --minimum-length 30 -a "C{30}" -U 15 -o tail_trim.{}.R1.fq.gz -p tail_trim.{}.R2.fq.gz a.{}.R1.fq.gz a.{}.R2.fq.gz 1> tail.{}.txt'
-#check cutadapt reports .txt files to make sure trimming has worked. Can also repeat fastqc to see if per base GC content flag at beginning of R2 is now gon
+#check cutadapt reports .txt files to make sure trimming has worked. Can also repeat fastqc to see if per base GC content flag at beginning of R2 is now gone
 
 ##Update 2023: since original experiments were done IDT acquired Swift Biosciences. The adapter types are now different
 #Using i5 and i7 TruSeq HT adapters
