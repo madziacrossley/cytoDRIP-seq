@@ -106,7 +106,7 @@ for FILENAME in *.bam; do
     echo "echo \"Processing file $FILENAME ...\""
     echo "bedtools bamtobed -bedpe -i $FILENAME > ${BEDTOOLSPATH}/${FILENAME}.bedpe" # Convert from BAM to BEDPE
     echo "cut -f 1,2,6 ${BEDTOOLSPATH}/${FILENAME}.bedpe > ${CUTPATH_HUMAN}/${FILENAME}.bed" # Take columns 1 (chr R1), 2 (start R1), and 6 (End R2)
-    echo "gsort --parallel=10 -u -k1,1 -k2,2n -k3,3n ${CUTPATH_HUMAN}/${FILENAME}.bed > ${UNIQ}/${FILENAME}.bed" # Sort according to chromosome, then start, then end, then emove duplicate fragments from the file, parallelized sort over 10 cores
+    echo "gsort --parallel=10 -u -k1,1 -k2,2n -k3,3n ${CUTPATH_HUMAN}/${FILENAME}.bed > ${UNIQ}/${FILENAME}.bed" # Sort according to chromosome, then start, then end, then remove duplicate fragments from the file, parallelized sort over 10 cores
     echo "bedtools genomecov -bg -g $GENOMEFILE -i ${UNIQ}/${FILENAME}.bed > ${TRACKS}/${FILENAME}.bedGraph" #Make bedGraph
     echo "$TOBIGWIG ${TRACKS}/${FILENAME}.bedGraph $GENOMEFILE ${BIGWIG}/${FILENAME}.bw"  # Convert to bigWig format, note this bw is not read count normalized
 done
