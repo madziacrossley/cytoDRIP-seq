@@ -17,7 +17,7 @@
 ##quality control check with fastqc
 
 mkdir fastqc
-find *.fastq.gz | grep -v 'Und' | xargs fastqc -o /Volumes/Pegasus/cytoDRIP2_SETX/fastqc/ --threads 10
+find *.fastq.gz | grep -v 'Und' | xargs fastqc -o ../fastqc/ --threads 10
 
 #Look at html files generated:
 #Samples 1-4 (i.e. S9.6 IPs) look good, good sequence quality and other scores. As expected for R2s see G tail. For IgG samples (5-8) per base sequence content look lower and seems to be more duplication. Overall IgGs have lower diversity libraries than IPs.
@@ -29,7 +29,12 @@ find *.fastq.gz | grep -v 'Und' | xargs fastqc -o /Volumes/Pegasus/cytoDRIP2_SET
 #trim off adapters and secondly G-rich tails (order is important, G-rich tails are added with the ssDNA library kit. This improves alignment)
 
 mkdir adapter_tail_trim
-#Tru-seq LT adapters 
+#Using P5 TruSeq LT adapter (universal sequence)
+#Actual sequences
+#5'-3' AATGATACGGCGACCACCGAGATCTACACTCTTTCCCTACACGACGCTCTTCCGATCT
+#5'-3' GATCGGAAGAGCACACGTCTGAACTCCAGTCACNNNNNNNNCTCGTATGCCGTCTTCTGCTTG
+#with Ns representing the unique barcode
+
 ADAPTER_FWD=GATCGGAAGAGCACACGTCTGAACTCCAGTCACN{8}
 ADAPTER_REV=AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCATT
 
@@ -37,15 +42,19 @@ cat sample_names.txt | xargs -I {} -P10 sh -c 'cutadapt -j 10 --minimum-length 3
 cat sample_names.txt | xargs -I {} -P10 sh -c 'cutadapt -j 10 --minimum-length 30 -a "C{30}" -U 15 -o tail_trim.{}.R1.fq.gz -p tail_trim.{}.R2.fq.gz a.{}.R1.fq.gz a.{}.R2.fq.gz 1> tail.{}.txt'
 #check cutadapt reports .txt files to make sure trimming has worked. Can also repeat fastqc to see if per base GC content flag at beginning of R2 is now gon
 
-#Update 2023: since original experiments were done IDT acquired Swift Biosciences. The adapter types are now different
-#Using P5 TruSeq LT adapter (universal sequence)
-#5'-3' AATGATACGGCGACCACCGAGATCTACACTCTTTCCCTACACGACGCTCTTCCGATCT
-#5'-3' GATCGGAAGAGCACACGTCTGAACTCCAGTCACNNNNNNNNCTCGTATGCCGTCTTCTGCTTG
-
+##Update 2023: since original experiments were done IDT acquired Swift Biosciences. The adapter types are now different
 #Using i5 and i7 TruSeq HT adapters
+#Actual adapter sequences
+#Index 1 (i7) Adapters
+#5´–GATCGGAAGAGCACACGTCTGAACTCCAGTCACXXXXXXXXATCTCGTATGCCGTCTTCTGCTTG–3´
+#Index 2 (i5) Adapters
+#5´–AATGATACGGCGACCACCGAGATCTACACYYYYYYYYACACTCTTTCCCTACACGACGCTCTTCCGATCT–3´
+#With X and Y standing for the unique barcodes
+
 #Use Ns in place of 8 base unique barcode for each i5 and i7
 #ADAPTER_FWD = GATCGGAAGAGCACACGTCTGAACTCCAGTCACNNNNNNNNATCTCGTATGCCGTCTTCTGCTTG
 #ADAPTER_REV = AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTNNNNNNNNGTGTAGATCTCGGTGGTCGCCGTATCATT
+##End of update
 
 #remove adapter trim files to keep adapter and tail trimmed fq files
 rm a.*.R1.fq.gz
