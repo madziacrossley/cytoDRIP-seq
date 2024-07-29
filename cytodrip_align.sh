@@ -65,7 +65,7 @@ rm a.*.R2.fq.gz
 mkdir -p ../bowtie_e2e_alignment
 
 INDEX="/Genomics/indexes/hg38/hg38"
-cat sample_names.txt | xargs -I {} -P10 sh -c 'bowtie2 -p10 --no-unal --no-mixed --no-discordant -x $INDEX -1 adapter_tail_trim/tail_trim.{}.R1.fq.gz -2 adapter_tail_trim/tail_trim.{}.R2.fq.gz | samtools view -bSh > bowtie_e2e_alignment/{}.bam'
+cat sample_names.txt | xargs -I {} -P10 sh -c 'bowtie2 -p10 --very-sensitive --no-unal --no-mixed --no-discordant -x $INDEX -1 adapter_tail_trim/tail_trim.{}.R1.fq.gz -2 adapter_tail_trim/tail_trim.{}.R2.fq.gz | samtools view -bSh > bowtie_e2e_alignment/{}.bam'
 #run script
 sh ./cytodrip_align.sh 2> bowtie_e2e_alignment/bowtie_report.txt
 #alignment rates: for S9.6 IPs 84-86%, for IgG 42-55%
